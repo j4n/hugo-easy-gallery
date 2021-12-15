@@ -10,7 +10,7 @@ Grid Layout Styles
 .gallery {
     overflow: hidden;
     margin: 10px;
-    max-width: 768px;
+/*    max-width: 768px; */
 }
 .gallery .box {
     float: left;
@@ -26,16 +26,17 @@ Grid Layout Styles
         padding-bottom: 50%;
     }
 }
+    /* Small desktop / ipad view: 3 tiles 
 @media only screen and (min-width : 480px) {
-    /* Small desktop / ipad view: 3 tiles */
     .gallery .box {
         width: 33.3%;
-        padding-bottom: 33.3%; /*  */
+        padding-bottom: 33.3%; 
     }
 }
-@media only screen and (min-width : 9999px) {
+*/
+@media only screen and (min-width : 1024px) {
    /* Medium desktop: 4 tiles */
-   .box {
+   .gallery .box {
       width: 25%;
       padding-bottom: 25%;
    }
