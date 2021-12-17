@@ -2,8 +2,12 @@
 Put this file in /layouts/shortcodes/figure.html
 NB this overrides Hugo's built-in "figure" shortcode but is backwards compatible
 Documentation and licence at https://github.com/liwenyip/hugo-easy-gallery/
+
+page bundle support added: 
+ - use res="img.ext" instad of src=
+ - use caption= to also set alt=
 -->
-{{- $thumbnailSize := .Get "thumbnail-size" | default "300x300" -}}
+{{- $thumbnailSize := .Get "thumbnail-size" | default "500x500 smart Lanzcos" -}}
 <!-- count how many times we've called this shortcode; load the css if it's the first time -->
 {{- if not ($.Page.Scratch.Get "figurecount") }}<link rel="stylesheet" href="/css/hugo-easy-gallery.css" />{{ end }}
 {{- $.Page.Scratch.Add "figurecount" 1 -}}
@@ -12,10 +16,11 @@ Documentation and licence at https://github.com/liwenyip/hugo-easy-gallery/
 {{- $thumb := "" -}}
 {{- $link := "" -}}
 {{- if (.Get "res") -}}
-  {{- $res := .Get "res" -}}
-  {{- $resImg := .Page.Resources.GetMatch ($res) -}}
-  {{- $thumb = $resImg.Fill $thumbnailSize -}}
-  {{- $link = $res -}}
+  {{ with (.Page.Resources.GetMatch (.Get "res")) }}
+    {{ $img := (.Fit $thumbnailSize) }}
+    {{ $thumb = $img.RelPermalink }}
+  {{ end }}
+  {{- $link = .Get "res" -}}
 {{- else -}}
   {{- $thumb = .Get "src" | default (printf "%s." (.Get "thumb") | replace (.Get "link") ".") | relURL -}}
   {{ $link = .Get "link" | default (.Get "src") }}

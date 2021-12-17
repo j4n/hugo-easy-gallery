@@ -91,7 +91,7 @@ img / a styles
     right: 0;
     top: 0;
     bottom: 0;
-    background-size: cover;
+    background-size: contain; /* was cover for crop, problematic with resize */
     background-position: 50% 50%;
     background-repeat: no-repeat;
 }
