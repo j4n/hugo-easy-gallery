@@ -17,8 +17,9 @@ page bundle support added:
 {{- $link := "" -}}
 {{- if (.Get "res") -}}
   {{ with (.Page.Resources.GetMatch (.Get "res")) }}
-    {{ $img := (.Fit $thumbnailSize) }}
-    {{ $thumb = $img.RelPermalink }}
+    {{ $img := (.Resize "x500") }}
+    {{ $cropped := ($img.Crop "500x500 smart") }}
+    {{ $thumb = $cropped.RelPermalink }}
   {{ end }}
   {{- $link = .Get "res" -}}
 {{- else -}}
