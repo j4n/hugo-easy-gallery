@@ -9,7 +9,8 @@ Grid Layout Styles
 */
 .gallery {
     overflow: hidden;
-    margin: 10px;
+    margin: 0px;
+    margin-bottom: 2em;
 /*    max-width: 768px; that is not necessary in our case */
 }
 
@@ -23,6 +24,7 @@ Grid Layout Styles
     /* Default: 1 tile wide */
     padding-bottom: 100%; 
     border: none;
+    margin-bottom: 0;
 }
 @media only screen and (min-width : 365px) {
     /* Tablet view: 2 tiles */
