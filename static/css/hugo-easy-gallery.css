@@ -17,12 +17,12 @@ Grid Layout Styles
 .gallery .img {
     border-radius: 4px;
 }
-
 .gallery .box {
+    /* Default: 1 tile wide */
+    width: 50%;
     float: left;
     position: relative;
-    /* Default: 1 tile wide */
-    padding-bottom: 100%; 
+    padding-bottom: 50%; 
     border: none;
     margin-bottom: 0;
 }
@@ -30,6 +30,7 @@ Grid Layout Styles
     /* Tablet view: 2 tiles */
     .gallery .box {
         width: 50%;
+	float: left;
         padding-bottom: 50%;
     }
 }
@@ -113,6 +114,7 @@ figure a {
     right: 0;
     top: 0;
     bottom: 0;
+    border-bottom: none;
 }
 
 /*
