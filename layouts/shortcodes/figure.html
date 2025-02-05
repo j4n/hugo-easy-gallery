@@ -7,26 +7,31 @@ page bundle support added:
  - use res="img.ext" instad of src=
  - use caption= to also set alt=
  - use crop="pos" with pos one of TopLeft, Top, TopRight, Left, Center, Right, BottomLeft, Bottom, BottomRight, or Smart for crop spec
+ - use thumbnail-size="800" to increase the thumbnail size (default 500px)
+ - use width="100%" to increase the width of the containing box to 100%
 -->
-{{- $thumbnailCrop := .Get "crop" | default "smart" -}}
-{{- $thumbnailSize := .Get "thumbnail-size" | default "500x500" -}}
-{{- $crOptions := printf "%s %s Lanzcos" $thumbnailSize $thumbnailCrop -}}
+
+{{ $thumbnailCrop := .Get "crop" | default "smart" }}
+{{ $thumbnailSize := .Get "thumbnail-size" | default "500"  }}
+
 <!-- count how many times we've called this shortcode; load the css if it's the first time -->
 <!--{{- if not ($.Page.Scratch.Get "figurecount") }}<link rel="stylesheet" href="/css/hugo-easy-gallery.css" />{{ end }}-->
 {{- $.Page.Scratch.Add "figurecount" 1 -}}
-
 <!-- use res for page bundle resource/hugo scaling or original link/src/thumb logic -->
 {{- $thumb := "" -}}
 {{- $link := "" -}}
 {{- $cropped := "" -}}
+{{- $figWidth := 0 }}
 {{- if (.Get "res") -}}
   {{ with (.Page.Resources.GetMatch (.Get "res")) -}}
-    {{- if $thumbnailCrop = "none" -}}
-      {{- $cropped := (.Resize "500x") -}}
-      {{- $thumb = $cropped.RelPermalink -}}
+    {{- if eq $thumbnailCrop "none" -}}
+        {{- $resized := (.Resize (printf "%sx" $thumbnailSize)) -}}
+        {{- $thumb = $resized.RelPermalink -}}
+        {{ $figWidth = $resized.Width }}
     {{- else -}}
-      {{- $cropped := (.Fill $crOptions) -}}
-      {{- $thumb = $cropped.RelPermalink -}}
+        {{- $cropped := (.Fill (printf "%sx%s" $thumbnailSize $thumbnailSize)) -}}
+        {{- $thumb = $cropped.RelPermalink -}}
+        {{ $figWidth = $cropped.Width }}
     {{- end -}}
   {{ end }}
   {{- $link = .Get "res" -}}
@@ -36,7 +41,8 @@ page bundle support added:
 {{- end -}}
 
 <!-- use either src or link-thumb for thumbnail image -->
-<div class="box{{ with .Get "caption-position" }} fancy-figure caption-position-{{.}}{{end}}{{ with .Get "caption-effect" }} caption-effect-{{.}}{{end}}" {{ with .Get "width" }}style="max-width:{{.}}"{{end}}>
+<div class="box{{ with .Get "caption-position" }} fancy-figure caption-position-{{.}}{{end}}{{ with .Get "caption-effect" }} caption-effect-{{.}}{{end}}" {{ with .Get "width" }}style="width:{{.}}"{{end}}{{- with .Get "fullwidth" -}}{{- (printf "width: %s" $figWidth) -}}{{- end -}}
+>
   <figure {{ with .Get "class" }}class="{{.}}"{{ end }} itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
     <div class="img"{{ if .Parent }} style="background-image: url('{{ $thumb }}');"{{ end }}{{ with .Get "size" }} data-size="{{.}}"{{ end }}>
       <img itemprop="thumbnail" src="{{ $thumb }}" {{ with .Get "alt" | default (.Get "caption") }}alt="{{.}}"{{ end }}/><!-- <img> hidden if in .gallery -->
