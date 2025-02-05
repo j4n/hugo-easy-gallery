@@ -8,7 +8,7 @@ page bundle support added:
  - use caption= to also set alt=
  - use crop="pos" with pos one of TopLeft, Top, TopRight, Left, Center, Right, BottomLeft, Bottom, BottomRight, or Smart for crop spec
  - use thumbnail-size="800" to increase the thumbnail size (default 500px)
- - use width="100%" to increase the width of the containing box to 100%
+ - use width="100%" to increase the width of the containing
 -->
 
 {{ $thumbnailCrop := .Get "crop" | default "smart" }}
@@ -40,14 +40,26 @@ page bundle support added:
   {{ $link = .Get "link" | default (.Get "src") }}
 {{- end -}}
 
-<!-- use either src or link-thumb for thumbnail image -->
-<div class="box{{ with .Get "caption-position" }} fancy-figure caption-position-{{.}}{{end}}{{ with .Get "caption-effect" }} caption-effect-{{.}}{{end}}" {{ with .Get "width" }}style="width:{{.}}"{{end}}{{- with .Get "fullwidth" -}}{{- (printf "width: %s" $figWidth) -}}{{- end -}}
->
+<!--
+Use either src or link-thumb for thumbnail image
+
+Options:
+- caption-position: adds fancy-figure and caption-position-[value] classes for caption positioning
+- caption-effect: adds caption-effect-[value] class for caption transition effects
+- float: adds fig-float-[value] class for positioning (e.g. "left" for left-aligned floating, and "mast" for a 100% mast)
+- width: sets style on the container div (10, 15, 20 (reponsive), 25, 30, 35)
+-->
+<div class='box {{ with .Get "float" }}fig-float-{{ . }}{{end}} {{ with .Get "width" }}fig-w-{{.}}{{end}}  {{ with .Get "caption-position" }} fancy-figure caption-position-{{.}}{{end}}{{ with .Get "caption-effect" }} caption-effect-{{.}}{{end}}' >
   <figure {{ with .Get "class" }}class="{{.}}"{{ end }} itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
-    <div class="img"{{ if .Parent }} style="background-image: url('{{ $thumb }}');"{{ end }}{{ with .Get "size" }} data-size="{{.}}"{{ end }}>
-      <img itemprop="thumbnail" src="{{ $thumb }}" {{ with .Get "alt" | default (.Get "caption") }}alt="{{.}}"{{ end }}/><!-- <img> hidden if in .gallery -->
-    </div>
-    <a href="{{$link}}" itemprop="contentUrl"></a>
+        <a href="{{$link}}" itemprop="contentUrl">
+        {{- if .Parent -}}
+            <!-- <img> hidden if in .gallery -->
+            <div class="img" style="background-image: url('{{ $thumb }}');"{{ with .Get "size" }} data-size="{{.}}"{{ end }}>
+        </div>
+        {{- else -}}
+            <img itemprop="thumbnail" src="{{ $thumb }}" {{ with .Get "alt" | default (.Get "caption") }}alt="{{.}}"{{ end }}/>
+        {{- end -}}
+        </a>
     {{- if or (or (.Get "title") (.Get "caption")) (.Get "attr")}}
       <figcaption>
         {{- with .Get "title" }}<h4>{{.}}</h4>{{ end }}
